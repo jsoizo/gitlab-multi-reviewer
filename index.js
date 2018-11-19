@@ -1,28 +1,30 @@
+// Load env vars from file (for development)
 require('dotenv').config();
 
+// Initialize logger
 const log4js = require('log4js');
 const logger = log4js.getLogger();
 logger.level = process.env.LOG_LEVEL || 'info';
 console.log(logger.level);
 
+// Initialize marked to parse MR description markdown
 const marked = require('marked');
-
-const gitLabApiUrl = process.env.GITLAB_API_URL || 'http://gitlab.com';
-if (! process.env.GITLAB_API_TOKEN) {
-  logger.fatal('GITLAB_API_TOKEN must be set');
-  process.exit(1);
-}
-const gitLabApiToken = process.env.GITLAB_API_TOKEN;
 
 // Initialize GitLab API Client
 const GitLab = require('gitlab/dist/es5').default
 const gitLabApi = new GitLab({
-  url: gitLabApiUrl,
-  token: gitLabApiToken
+  url: process.env.GITLAB_API_URL || 'http://gitlab.com',
+  token: (() => {
+    if (! process.env.GITLAB_API_TOKEN) {
+      logger.fatal('GITLAB_API_TOKEN must be set');
+      process.exit(1);
+    }
+    return process.env.GITLAB_API_TOKEN;
+  })
 });
 
 /**
- *
+ * Execute merge from source to target
  * @param {BigInteger} projectId
  * @param {BigInteger} mergeRequestIid
  */
@@ -36,7 +38,11 @@ async function executeMerge(projectId, mergeRequestIid) {
     projectId,
     mergeRequestIid,
     { should_remove_source_branch: true, merge_when_pipeline_succeeds: true }
-  ).catch(err => logger.error(err));
+  ).catch((err) => {
+    logger.error('Failed to merge via API');
+    logger.error(err);
+    throw err;
+  });
   logger.info('Success to accept merge reqest!!!');
 }
 
@@ -76,6 +82,7 @@ function isAllReviewerAccepted(descriptionText) {
   return reviewerListItems.length > 0 && reviewerListItems.every(token => token.checked);
 }
 
+// Main
 const app = require('express')();
 const { json } = require('body-parser');
 const { PORT = 3000 } = process.env;
