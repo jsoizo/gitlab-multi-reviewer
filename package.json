@@ -1,13 +1,15 @@
 {
   "name": "gitlab-multi-reviewer",
   "version": "0.1.0",
-  "description": "",
+  "repository": "github:jsoizo/gitlab-multi-reviewer",
+  "author": "Jun Sakamoto <jun@sakamo.to> (https://github.com/jsoizo)",
+  "license": "MIT",
+  "description": "Automatically merge when all TODOs are checked under \"Reviewer\" heading on description markdown",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
   "dependencies": {
     "body-parser": "^1.18.3",
     "dotenv": "^6.1.0",
