@@ -3,6 +3,7 @@
 This automatically merge MR, when all reviewers who are listed as TODO under "Reviewers" or "reviewers" headings check own list item.
 
 Below is example MR description.
+On this case, MR is accepted only when all of TODO list items are checked.
 
 ```
 # Awosome Merge Request
@@ -57,4 +58,4 @@ vi .env
 npm start
 ```
 
-Environment variables and project config are same as when with docker.
+Environment variables and project settings are same as when with docker.
