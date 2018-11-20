@@ -55,11 +55,12 @@ async function executeMerge(projectId, mergeRequestIid) {
 function isAllReviewerAccepted(descriptionText) {
   const tokens = marked.lexer(descriptionText);
   logger.debug('Description parsed to markdown tokens.')
-  logger.debug(tokens);
+  logger.debug(`Tokens: ${JSON.stringify(tokens)}`);
   const reviewerListItems = [];
   let _isUnderReviwerHeading = false;
   let _currentHeadingDepth = 0;
   tokens.forEach((token) => {
+    logger.debug(`Current token: ${JSON.stringify(token)}`);
     if (token.type === 'heading' && token.text.toLowerCase() === 'reviewer') { // e.g. ## Reviewer
       logger.debug('Start "reviewer" headings');
       _isUnderReviwerHeading = true;
@@ -67,18 +68,18 @@ function isAllReviewerAccepted(descriptionText) {
     }
     if (_isUnderReviwerHeading) {
       if (token.type === 'list_item_start' && token.task) { // e.g. - [ ] foo
+        logger.debug('Found reviewer list item');
         reviewerListItems.push(token);
       }
       // End of section
-      if (token.type === 'heading' && token.depth >= _currentHeadingDepth && token.text.toLowerCase() !== 'reviewer') { // e.g. ## Bar
+      if (token.type === 'heading' && token.depth <= _currentHeadingDepth && token.text.toLowerCase() !== 'reviewer') { // e.g. ## Bar
         logger.debug('End "reviewer" headings');
         _isUnderReviwerHeading = false;
         _currentHeadingDepth = 0;
       }
     }
   });
-  logger.debug('Got reviewer lists');
-  logger.debug(reviewerListItems);
+  logger.debug(`Got reviewer lists: ${JSON.stringify(reviewerListItems)}`);
   return reviewerListItems.length > 0 && reviewerListItems.every(token => token.checked);
 }
 
@@ -90,7 +91,7 @@ const { PORT = 3000 } = process.env;
 app.use(json());
 app.post('/', (req, res) => {
   if (req.get('x-gitlab-event') === 'Merge Request Hook') {
-    logger.info('receive http request from GitLab');
+    logger.info('Receive http request from GitLab');
     const body = req.body;
     const descriptionText = body.object_attributes.description;
     // logger.debug(body.object_attributes);
