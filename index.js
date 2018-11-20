@@ -39,8 +39,7 @@ async function executeMerge(projectId, mergeRequestIid) {
     mergeRequestIid,
     { should_remove_source_branch: true, merge_when_pipeline_succeeds: true }
   ).catch((err) => {
-    logger.error('Failed to merge via API');
-    logger.error(err);
+    logger.error(`Failed to merge via API: ${err.message}`);
     throw err;
   });
   logger.info('Success to accept merge reqest!!!');
