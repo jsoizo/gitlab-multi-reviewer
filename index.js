@@ -93,13 +93,15 @@ app.post('/', (req, res) => {
   if (req.get('x-gitlab-event') === 'Merge Request Hook') {
     logger.info('Receive http request from GitLab');
     const body = req.body;
-    const descriptionText = body.object_attributes.description;
-    // logger.debug(body.object_attributes);
-    if (isAllReviewerAccepted(descriptionText)) {
-      logger.info(`Merge!! ${body.object_attributes.url}`);
-      const targetProjectId = body.object_attributes.target.id;
-      const mergeRequestIid = body.object_attributes.iid;
-      executeMerge(targetProjectId, mergeRequestIid);
+    if (["opened", "reopened"].indexOf(body.object_attributes.state) >= 0) { // only when MR is opened
+      const descriptionText = body.object_attributes.description;
+      logger.debug(body.object_attributes);
+      if (isAllReviewerAccepted(descriptionText)) {
+        logger.info(`Merge!! ${body.object_attributes.url}`);
+        const targetProjectId = body.object_attributes.target.id;
+        const mergeRequestIid = body.object_attributes.iid;
+        executeMerge(targetProjectId, mergeRequestIid);
+      }
     }
     res.status(200).send();
   } else {
