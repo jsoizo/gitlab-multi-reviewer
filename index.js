@@ -11,16 +11,16 @@ console.log(logger.level);
 const marked = require('marked');
 
 // Initialize GitLab API Client
+const gitLabApiUrl = process.env.GITLAB_API_URL || 'http://gitlab.com';
+if (! process.env.GITLAB_API_TOKEN) {
+  logger.fatal('GITLAB_API_TOKEN must be set');
+  process.exit(1);
+}
+const gitLabApiToken = process.env.GITLAB_API_TOKEN;
 const GitLab = require('gitlab/dist/es5').default
 const gitLabApi = new GitLab({
-  url: process.env.GITLAB_API_URL || 'http://gitlab.com',
-  token: (() => {
-    if (! process.env.GITLAB_API_TOKEN) {
-      logger.fatal('GITLAB_API_TOKEN must be set');
-      process.exit(1);
-    }
-    return process.env.GITLAB_API_TOKEN;
-  })
+  url: gitLabApiUrl,
+  token: gitLabApiToken
 });
 
 /**
