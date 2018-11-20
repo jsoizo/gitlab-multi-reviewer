@@ -1,6 +1,6 @@
 # gitlab-multi-reviewer
 
-This automatically merge MR, when all reviewers who are listed as TODO under "Reviewers" or "reviewers" headings check own list item.
+This automatically merge MR, when all reviewers who are listed as TODO under "Reviewer" or "reviewer" headings check own list item.
 
 Below is example MR description.
 On this case, MR is accepted only when all of TODO list items are checked.
@@ -10,7 +10,7 @@ On this case, MR is accepted only when all of TODO list items are checked.
 
 ## any information
 
-## Reviewers
+## Reviewer
 
 ### Engineer
 
