@@ -43,12 +43,11 @@ GITLAB_API_TOKEN=1234567890abcdef # User Settings -> Access Tokens -> Personal A
 PORT=8000 # default 3000
 ```
 
-Set integration settings to Project,
-and check `Merge Request events` trigger.
+Set integration settings to Project(`Project -> Settings -> Integrations`), and input as below
 
-```
-Project -> Settings -> Integrations
-```
+- URL: `http://your.gitlab-multi-reviewer.app/`
+- Trigger: `Merge request events`
+- SSL verification: as you like
 
 ### with Source
 
