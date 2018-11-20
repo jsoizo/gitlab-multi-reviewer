@@ -29,6 +29,7 @@ On this case, MR is accepted only when all of TODO list items are checked.
 
 ```
 docker run -ti --rm \
+  --p 3000:3000 \ # change if you set PORT env var
   --env-file .env \
   jsoizo/gitlab-multi-reviewer
 ```
